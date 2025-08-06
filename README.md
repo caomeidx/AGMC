@@ -1,1 +1,1 @@
-hongyaojiajin.github.io
+hongyaojiajin.github.io/hongyaojiajin.html
