@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGMathCompetition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* 背景容器 - 用于容纳所有背景元素 */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        body {
+            background-color: #fff5f8;
+            /* 基础背景图案 */
+            background-image: 
+                radial-gradient(#ffccd5 0.5px, transparent 0.5px),
+                radial-gradient(#ffccd5 0.5px, #fff5f8 0.5px),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffb6c1' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-size: 20px 20px, 20px 20px, 60px 60px;
+            background-position: 0 0, 10px 10px, 0 0;
+            padding: 30px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* 装饰性几何形状 */
+        .decorative-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 133, 179, 0.03);
+            filter: blur(40px);
+            z-index: -1;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation: float 30s ease-in-out infinite;
+        }
+        
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -150px;
+            animation: float 35s ease-in-out infinite 5s;
+        }
+        
+        .shape-3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            right: 10%;
+            animation: float 25s ease-in-out infinite 10s;
+        }
+        
+        /* 浮动元素动画 */
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        /* 背景微妙移动动画 */
+        @keyframes backgroundShift {
+            0% {
+                background-position: 0 0, 10px 10px, 0 0;
+            }
+            100% {
+                background-position: 200px 200px, 210px 210px, 60px 60px;
+            }
+        }
+        
+        /* 粒子效果容器 */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 133, 179, 0.2);
+            animation: drift 20s linear infinite;
+        }
+        
+        @keyframes drift {
+            from { transform: translateY(100vh) translateX(0); }
+            to { transform: translateY(-100px) translateX(calc(100vw * var(--drift-x))); }
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(248, 177, 190, 0.15);
+            padding: 40px;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 容器顶部装饰条 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #d84b7f, #ff85b3);
+        }
+        
+        /* 容器角落装饰 */
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 133, 179, 0.05);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(248, 177, 190, 0.2);
+        }
+        
+        h1 {
+            color: #d84b7f;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ffe0ea;
+            position: relative;
+            display: inline-block;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #d84b7f;
+            transition: width 0.3s ease;
+        }
+        
+        h1:hover::after {
+            width: 100%;
+        }
+        
+        h2 {
+            color: #d84b7f;
+            margin: 30px 0 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        h2::before {
+            content: '📌';
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-10px);
+        }
+        
+        h2:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* 模块标签样式 */
+        .module-tag {
+            margin: 35px 0 20px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 标签光泽效果 */
+        .module-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-25deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            100% {
+                left: 150%;
+            }
+        }
+        
+        .high-school-tag {
+            background: linear-gradient(135deg, #d84b7f, #e65c8a);
+        }
+        
+        .middle-school-tag {
+            background: linear-gradient(135deg, #e66ca1, #f07da8);
+        }
+        
+        .other-options-tag {
+            background: linear-gradient(135deg, #ff85b3, #ff96be);
+        }
+        
+        .required-mark {
+            color: #fff0f5;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            transition: color 0.3s ease;
+            font-size: 1.05rem;
+        }
+        
+        p:hover {
+            color: #333;
+        }
+        
+        .link-btn {
+            display: inline-block;
+            color: #d84b7f;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #ff85b3;
+            border-radius: 10px;
+            margin: 12px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+        
+        .link-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 133, 179, 0.1), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .link-btn:hover {
+            background: #ff85b3;
+            color: white;
+            box-shadow: 0 6px 16px rgba(255, 133, 179, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .link-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* 文件下载按钮样式 */
+        .file-download-btn {
+            display: inline-flex;
+            align-items: center;
+            margin: 12px 18px 12px 0;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #d84b7f, #e65c8a);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(216, 75, 127, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-25deg);
+            transition: all 0.6s ease;
+        }
+        
+        .file-download-btn:hover::after {
+            left: 150%;
+        }
+        
+        .file-download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(216, 75, 127, 0.3);
+            background: linear-gradient(135deg, #c73d73, #d84b7f);
+        }
+        
+        .file-download-btn i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .copy-section {
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 12px;
+            background: #fff5f8;
+            border: 1px solid #ffddee;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .copy-section:hover {
+            border-color: #ff85b3;
+            background: #fff0f5;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(255, 133, 179, 0.15);
+        }
+        
+        .copy-section:active {
+            transform: translateX(2px) scale(0.995);
+        }
+        
+        .copy-section.active {
+            border-color: #d84b7f;
+            background: #fff0f5;
+            box-shadow: 0 6px 18px rgba(255, 133, 179, 0.2);
+        }
+        
+        .copy-section.selected {
+            border-left: 5px solid #d84b7f;
+            background: #fff0f5;
+            box-shadow: 0 4px 15px rgba(255, 133, 179, 0.15);
+        }
+        
+        .copy-text {
+            color: #d84b7f;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 1.05rem;
+        }
+        
+        .copy-section::after {
+            content: "点击选择";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #d84b7f;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .copy-section:hover::after {
+            opacity: 1;
+        }
+        
+        .copy-section.selected::after {
+            content: "已选择";
+            background: #4CAF50;
+        }
+        
+        .tip {
+            margin: 12px 0 0 8px;
+            color: #e65c8a;
+            font-size: 0.95rem;
+            display: none;
+            padding: 10px 15px;
+            background: rgba(255, 133, 179, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #ff85b3;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tip::before {
+            content: '✓';
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        .copied-animation {
+            animation: pulse 0.6s ease;
+        }
+        
+        /* 奖品内容区域样式 */
+        .prize-content {
+            margin: 20px 0 10px 15px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff0f5;
+            border: 1px solid #ffddee;
+            display: none;
+            animation: slideDown 0.5s ease forwards;
+            position: relative;
+        }
+        
+        /* 奖品区域装饰 */
+        .prize-content::before {
+            content: '🎁';
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-size: 24px;
+            transform: rotate(15deg);
+            opacity: 0.6;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+                overflow: hidden;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 800px;
+            }
+        }
+        
+        .prize-title {
+            color: #d84b7f;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .prize-title::before {
+            content: '🎀';
+        }
+        
+        .prize-items {
+            margin-left: 15px;
+            line-height: 1.7;
+            color: #444;
+        }
+        
+        .兑奖方式 {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ffcce5;
+            color: #2c3e50;
+            background: rgba(255,255,255,0.4);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        /* 已选内容区域 */
+        .selected-items {
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 12px;
+            background: #fff5f8;
+            border: 1px solid #ffddee;
+            display: none;
+            position: relative;
+        }
+        
+        .selected-items::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff85b3, #d84b7f);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .selected-items.visible {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .selected-title {
+            color: #d84b7f;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .selected-title::before {
+            content: '📋';
+        }
+        
+        .selected-list {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .selected-list li {
+            margin: 8px 0;
+            padding-left: 8px;
+            position: relative;
+            animation: fadeIn 0.3s ease forwards;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        .selected-list li::before {
+            content: '•';
+            color: #d84b7f;
+            position: absolute;
+            left: -18px;
+            font-size: 1.5rem;
+            top: -5px;
+        }
+        
+        .remove-item {
+            color: #ff4d6d;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-left: 8px;
+            padding: 0 5px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .remove-item:hover {
+            background: #ff4d6d;
+            color: white;
+        }
+        
+        /* 操作按钮样式 */
+        .action-buttons {
+            margin: 25px 0 10px;
+            gap: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .action-buttons.visible {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #d84b7f, #e65c8a);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(216, 75, 127, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-25deg);
+            transition: all 0.6s ease;
+        }
+        
+        .action-btn:hover::after {
+            left: 150%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(216, 75, 127, 0.3);
+            background: linear-gradient(135deg, #c73d73, #d84b7f);
+        }
+        
+        /* 重置按钮单独样式 */
+        .reset-btn {
+            background: linear-gradient(135deg, #ff85b3, #ff96be);
+        }
+        
+        .reset-btn:hover {
+            background: linear-gradient(135deg, #f07da8, #ff85b3);
+        }
+        
+        /* 模块容器样式 */
+        .module-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: #fff;
+            border: 1px solid #ffeff4;
+            box-shadow: 0 5px 15px rgba(255, 222, 238, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 模块容器背景装饰 */
+        .module-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,133,179,0.05) 0%, rgba(255,255,255,0) 70%);
+            z-index: 0;
+        }
+        
+        .module-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 222, 238, 0.15);
+        }
+        
+        /* 表格样式 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: white;
+            position: relative;
+        }
+        
+        .info-table th, .info-table td {
+            border: 1px solid #ffddee;
+            padding: 15px 20px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .info-table th {
+            background: linear-gradient(180deg, #fff0f5, #ffe6ef);
+            color: #d84b7f;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .info-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff85b3, transparent);
+        }
+        
+        .info-table tr:nth-child(even) {
+            background-color: #fff8fa;
+        }
+        
+        .info-table tr:hover {
+            background-color: #fff0f5;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* 二维码容器 */
+        .qr-container {
+            margin: 15px 0 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #ffeff4;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        /* 二维码装饰元素 */
+        .qr-container::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: -5px;
+            left: -5px;
+            border-top: 3px solid #ff85b3;
+            border-left: 3px solid #ff85b3;
+            border-radius: 5px 0 0 0;
+        }
+        
+        .qr-container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: -5px;
+            right: -5px;
+            border-bottom: 3px solid #ff85b3;
+            border-right: 3px solid #ff85b3;
+            border-radius: 0 0 5px 0;
+        }
+        
+        .qr-container img {
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .qr-container:hover {
+            transform: translateY(-3px) rotate(1deg);
+            box-shadow: 0 8px 20px rgba(255, 133, 179, 0.15);
+        }
+        
+        .qr-container:hover img {
+            transform: scale(1.03);
+        }
+        
+        .qr-desc {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+                height: auto;
+                margin: 15px 0;
+                padding: 20px;
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+                height: 0;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.4s ease forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .copy-section::after {
+                font-size: 0.75rem;
+                padding: 3px 8px;
+                right: 10px;
+            }
+            
+            .prize-content {
+                margin: 15px 0;
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .action-btn, .file-download-btn {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 12px;
+                justify-content: center;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+            
+            .module-container {
+                padding: 15px;
+            }
+            
+            .selected-items {
+                padding: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 背景装饰元素容器 -->
+    <div class="background-container">
+        <div class="decorative-shape shape-1"></div>
+        <div class="decorative-shape shape-2"></div>
+        <div class="decorative-shape shape-3"></div>
+        <div class="particles-container" id="particlesContainer"></div>
+    </div>
+
+    <div class="container">
+        <h1>AGMC数学竞赛</h1>  
+        <p>在活动开始后的几天内，请大家联系企业微信：<strong>草莓冬雪</strong>进行兑换。QQ不支持兑换与登记（因聊天记录较杂，且此号非专用管理号，感谢理解）</p>
+        <a href="https://agmc-k.com/information.html" class="link-btn" target="_blank">
+            <i class="fas fa-external-link-alt"></i> 点击查看AGMC官网对应积分
+        </a>
+        
+        <h2>1. 添加企业微信</h2>
+        <div class="qr-container">
+            <img src="1.png" width="256" height="249" alt="企业微信二维码">
+            <div class="qr-desc">扫码添加 "草莓冬雪" 企业微信</div>
+        </div>
+        
+        <h2>2. 下载相关表格</h2>
+        <p>请根据参赛组别下载对应表格文件（文件位于当前目录）：</p>
+        <button class="file-download-btn" onclick="window.open('czz.xlsx')">
+            <i class="fas fa-file-excel"></i> 初中组表格 (czz.xlsx)
+        </button>
+        <button class="file-download-btn" onclick="window.open('gzz.xlsx')">
+            <i class="fas fa-file-excel"></i> 高中组表格 (gzz.xlsx)
+        </button>
+        
+        <h2>3. 兑奖信息对照表</h2>
+        <table class="info-table">
+            <tr>
+                <th>组别</th>
+                <th>奖金说明</th>
+                <th>兑奖材料</th>
+            </tr>
+            <tr>
+                <td>高中组</td>
+                <td>超过100元需通过支付宝兑换</td>
+                <td>雨课堂主页截图（含雨课堂名字）、成绩页面截图</td>
+            </tr>
+            <tr>
+                <td>初中组</td>
+                <td>超过100元需通过支付宝兑换</td>
+                <td>雨课堂主页截图（含雨课堂名字）、成绩页面截图</td>
+            </tr>
+            <tr>
+                <td>幸运奖</td>
+                <td>无奖金</td>
+                <td>幸运数字截图、成绩截图、考场号码（便于核对）、雨课堂名字截图</td>
+            </tr>
+        </table>
+        
+        <h2>4. 请根据自身情况选择以下选项</h2>
+        <p>若有多项需求，请多次选择；其他无关选项可忽略。选择完成后点击"复制全部内容"，发送给草莓冬雪的企业微信即可（有积分的用户请留意弹出提示，等待发送信息填写通道）</p>
+        
+        <!-- 高中组模块 -->
+        <div class="module-container">
+            <div class="module-tag high-school-tag">高中组选项 <span class="required-mark">二选一</span></div>
+            
+            <!-- 高中组(有奖金)(有奖品) -->
+            <div class="copy-section high-school-option" data-id="1" onclick="selectContent(1, this)">
+                <div class="copy-text">高中组(有奖金)(有奖品)</div>
+                <div class="tip" id="tip1">已选择！</div>
+                
+                <div class="prize-content" id="prizeContent1">
+                    <div class="prize-title">高中组奖品及兑奖说明(请仔细阅读)</div>
+                    <div class="prize-items">
+                        <p>高中组奖品兑换需通过腾讯文档小程序（或APP）填写相关信息（如奖品选择、快递电话、收件人姓名等）。结果核对后，将发送对应的兑奖小程序链接。</p>
+                        
+                        <div class="兑奖方式">
+                            <strong>收到后打开腾讯文档收集表<br>
+ 打开文档<br>
+然后输入有关信息以确保我们方便核对 <br>
+
+点击确认后，输入相关信息并提交。注意：若积分有误，将联系您重新输入。</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 高中组(有奖金)(没有奖品) -->
+            <div class="copy-section high-school-option" data-id="2" onclick="selectContent(2, this)">
+                <div class="copy-text">高中组(有奖金)(没有奖品)</div>
+                <div class="tip" id="tip2">已选择！</div>
+            </div>
+        </div>
+        
+        <!-- 初中组模块 -->
+        <div class="module-container">
+            <div class="module-tag middle-school-tag">初中组选项 <span class="required-mark">二选一</span></div>
+            
+            <!-- 初中组(有奖金)(有奖品) -->
+            <div class="copy-section middle-school-option" data-id="3" onclick="selectContent(3, this)">
+                <div class="copy-text">初中组(有奖金)(有奖品)</div>
+                <div class="tip" id="tip3">已选择！</div>
+                
+                <div class="prize-content" id="prizeContent3">
+                    <div class="prize-title">初中组奖品及兑奖说明(请仔细阅读)</div>
+                    <div class="prize-items">
+                        <p>初中组奖品兑换需通过腾讯文档小程序（或APP）填写相关信息（如奖品选择、快递电话、收件人姓名等）。结果核对后，将发送对应的兑奖小程序链接。</p>
+                        
+                        <div class="兑奖方式">
+                            <strong>收到后打开腾讯文档收集表<br>
+ 打开文档<br>
+然后输入有关信息以确保我们方便核对
+<br>
+
+点击确认后，输入相关信息并提交。注意：若积分有误，将联系您重新输入。</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 初中组(有奖金)(没有奖品) -->
+            <div class="copy-section middle-school-option" data-id="4" onclick="selectContent(4, this)">
+                <div class="copy-text">初中组(有奖金)(没有奖品)</div>
+                <div class="tip" id="tip4">已选择！</div>
+            </div>
+        </div>
+        
+        <!-- 其他选项模块 -->
+        <div class="module-container">
+            <div class="module-tag other-options-tag">其他选项</div>
+            
+            <!-- 上届积分没有用完 -->
+            <div class="copy-section other-option" data-id="5" onclick="selectContent(5, this)">
+                <div class="copy-text">上届积分没有用完</div>
+                <div class="tip" id="tip5">已选择！</div>
+            </div>
+            
+            <!-- 我是幸运奖 -->
+            <div class="copy-section other-option" data-id="6" onclick="selectContent(6, this)">
+                <div class="copy-text">我是幸运奖</div>
+                <div class="tip" id="tip6">已选择！</div>
+            </div>
+        </div>
+        
+        <!-- 已选内容区域 -->
+        <div class="selected-items" id="selectedItems">
+            <div class="selected-title">已选内容</div>
+            <ul class="selected-list" id="selectedList"></ul>
+            <div class="action-buttons visible">
+                <button class="action-btn reset-btn" id="resetBtn">
+                    <i class="fas fa-eraser"></i> 清除选择
+                </button>
+                <button class="action-btn" id="copyAllBtn">
+                    <i class="fas fa-copy"></i> 复制全部内容
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子效果
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = 15; // 粒子数量
+            
+            // 清除已有粒子
+            container.innerHTML = '';
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机大小
+                const size = Math.random() * 5 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                particle.style.left = `${Math.random() * 100}vw`;
+                
+                // 随机透明度
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                // 随机动画延迟和持续时间
+                const delay = Math.random() * 10;
+                const duration = Math.random() * 30 + 20;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // 随机漂移方向
+                const driftX = (Math.random() * 2) - 1; // -1 到 1 之间
+                particle.style.setProperty('--drift-x', driftX);
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // 元素选择器
+        const copySections = document.querySelectorAll('.copy-section');
+        const selectedItems = document.getElementById('selectedItems');
+        const selectedList = document.getElementById('selectedList');
+        const resetBtn = document.getElementById('resetBtn');
+        const copyAllBtn = document.getElementById('copyAllBtn');
+        
+        // 定义复制文本
+        const copyTexts = [
+            "", // 索引0留空
+            "1.高中组，有奖金，有奖品，然后发送自己的雨课堂主页截图（有雨课堂名字的那个）、成绩页面截图",
+            "2.高中组，有奖金，没有奖品，然后发送自己的雨课堂主页截图（有雨课堂名字的那个）、成绩页面截图单",
+            "3.初中组，有奖金，有奖品，然后发送自己的雨课堂主页截图（有雨课堂名字的那个）、成绩页面截图",
+            "4.初中组，有奖金，没有奖品，然后发送自己的雨课堂主页截图（有雨课堂名字的那个）、成绩页面截图",
+            "5.上一届积分没有用完，我要用，然后等我查记录",
+            "6.桀桀桀我是幸运奖，然后发自己雨课堂选的尾号的截图和雨课堂成绩截图和名字截图，一共三个哦"
+        ];
+        
+        // 状态管理
+        let selectedItemsArray = []; // 存储所有已选择的选项ID
+        
+        // 选择内容函数
+        function selectContent(id, element) {
+            // 高中组互斥逻辑 (id=1和id=2)
+            if (id === 1 || id === 2) {
+                const otherId = id === 1 ? 2 : 1;
+                const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                
+                // 如果另一个选项已被选中，则取消
+                const otherIndex = selectedItemsArray.indexOf(otherId);
+                if (otherIndex !== -1) {
+                    selectedItemsArray.splice(otherIndex, 1);
+                    otherElement.classList.remove('selected');
+                    
+                    // 隐藏另一个选项的奖品区域
+                    if (otherId === 1) {
+                        document.getElementById(`prizeContent${otherId}`).style.display = 'none';
+                    }
+                }
+                
+                // 隐藏另一个选项
+                otherElement.classList.add('fade-out');
+            }
+            
+            // 初中组互斥逻辑 (id=3和id=4)
+            if (id === 3 || id === 4) {
+                const otherId = id === 3 ? 4 : 3;
+                const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                
+                // 如果另一个选项已被选中，则取消
+                const otherIndex = selectedItemsArray.indexOf(otherId);
+                if (otherIndex !== -1) {
+                    selectedItemsArray.splice(otherIndex, 1);
+                    otherElement.classList.remove('selected');
+                    
+                    // 隐藏另一个选项的奖品区域
+                    if (otherId === 3) {
+                        document.getElementById(`prizeContent${otherId}`).style.display = 'none';
+                    }
+                }
+                
+                // 隐藏另一个选项
+                otherElement.classList.add('fade-out');
+            }
+            
+            // 检查是否已选择
+            const index = selectedItemsArray.indexOf(id);
+            
+            if (index === -1) {
+                // 添加选择
+                selectedItemsArray.push(id);
+                element.classList.add('selected');
+                
+                // 显示提示
+                const tip = document.getElementById(`tip${id}`);
+                tip.style.display = "block";
+                setTimeout(() => {
+                    tip.style.opacity = "0";
+                    setTimeout(() => {
+                        tip.style.display = "none";
+                        tip.style.opacity = "1";
+                    }, 300);
+                }, 2000);
+                
+                // 显示奖品区域（如果有）
+                if (id === 1 || id === 3) {
+                    togglePrizeContent(`prizeContent${id}`);
+                }
+            } else {
+                // 取消选择
+                selectedItemsArray.splice(index, 1);
+                element.classList.remove('selected');
+                
+                // 隐藏奖品区域（如果有）
+                if (id === 1 || id === 3) {
+                    document.getElementById(`prizeContent${id}`).style.display = 'none';
+                }
+                
+                // 如果是高中组或初中组选项，取消选择后显示同组的另一个选项
+                if (id === 1 || id === 2) {
+                    const otherId = id === 1 ? 2 : 1;
+                    const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                    otherElement.classList.remove('fade-out');
+                }
+                
+                if (id === 3 || id === 4) {
+                    const otherId = id === 3 ? 4 : 3;
+                    const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                    otherElement.classList.remove('fade-out');
+                }
+            }
+            
+            // 更新已选列表（排序后）
+            updateSelectedList();
+        }
+        
+        // 更新已选列表（带排序）
+        function updateSelectedList() {
+            if (selectedItemsArray.length > 0) {
+                // 显示已选区域
+                selectedItems.classList.add('visible');
+                
+                // 清空列表
+                selectedList.innerHTML = '';
+                
+                // 对已选项进行排序（按数字从小到大）
+                const sortedItems = [...selectedItemsArray].sort((a, b) => a - b);
+                
+                // 添加已选项
+                sortedItems.forEach((id, index) => {
+                    const li = document.createElement('li');
+                    // 延迟添加每个项目以创建顺序动画效果
+                    setTimeout(() => {
+                        li.innerHTML = `${copyTexts[id]} <button class="remove-item" onclick="removeItem(${id})">×</button>`;
+                        selectedList.appendChild(li);
+                    }, index * 100);
+                });
+            } else {
+                // 隐藏已选区域
+                selectedItems.classList.remove('visible');
+                
+                // 显示所有选项
+                document.querySelectorAll('.copy-section').forEach(section => {
+                    section.classList.remove('fade-out');
+                });
+            }
+        }
+        
+        // 移除单个选项
+        function removeItem(id) {
+            const index = selectedItemsArray.indexOf(id);
+            if (index !== -1) {
+                selectedItemsArray.splice(index, 1);
+                
+                // 更新UI
+                const element = document.querySelector(`.copy-section[data-id="${id}"]`);
+                element.classList.remove('selected');
+                
+                // 隐藏奖品区域（如果有）
+                if (id === 1 || id === 3) {
+                    document.getElementById(`prizeContent${id}`).style.display = 'none';
+                }
+                
+                // 如果是高中组或初中组选项，移除后显示同组的另一个选项
+                if (id === 1 || id === 2) {
+                    const otherId = id === 1 ? 2 : 1;
+                    const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                    otherElement.classList.remove('fade-out');
+                }
+                
+                if (id === 3 || id === 4) {
+                    const otherId = id === 3 ? 4 : 3;
+                    const otherElement = document.querySelector(`.copy-section[data-id="${otherId}"]`);
+                    otherElement.classList.remove('fade-out');
+                }
+                
+                // 更新已选列表
+                updateSelectedList();
+            }
+        }
+        
+        // 重置按钮功能
+        resetBtn.addEventListener('click', () => {
+            // 重置所有样式和状态
+            copySections.forEach(section => {
+                section.classList.remove('selected', 'active', 'fade-out');
+            });
+            
+            // 隐藏奖品区域
+            document.querySelectorAll('.prize-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 重置状态变量
+            selectedItemsArray = [];
+            
+            // 更新已选列表
+            updateSelectedList();
+        });
+        
+        // 复制全部内容
+        copyAllBtn.addEventListener('click', () => {
+            if (selectedItemsArray.length === 0) return;
+            
+            // 拼接所有选中的文本（已排序）
+            const sortedItems = [...selectedItemsArray].sort((a, b) => a - b);
+            const allText = sortedItems.map(id => copyTexts[id]).join('\n\n');
+            
+            // 执行复制
+            navigator.clipboard.writeText(allText).then(() => {
+                // 显示复制成功提示
+                alert('所有内容已复制成功！请发送给企业微信"草莓冬雪"');
+                
+                // 添加动画效果
+                selectedItems.classList.add('copied-animation');
+                setTimeout(() => {
+                    selectedItems.classList.remove('copied-animation');
+                }, 500);
+            }).catch(err => {
+                console.error('复制失败: ', err);
+                alert('复制失败，请手动复制');
+            });
+        });
+        
+        // 奖品区域显示切换
+        function togglePrizeContent(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = element.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            // 创建粒子效果
+            createParticles();
+            
+            const container = document.querySelector('.container');
+            container.style.opacity = "0";
+            container.style.transform = "translateY(20px)";
+            
+            setTimeout(() => {
+                container.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+                container.style.opacity = "1";
+                container.style.transform = "translateY(0)";
+            }, 100);
+        });
+        
+        // 窗口大小改变时重新创建粒子
+        window.addEventListener('resize', createParticles);
+    </script>
+</body>
+</html>
